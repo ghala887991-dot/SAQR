@@ -16,7 +16,7 @@ type Frame = {
 };
 const KEYFRAMES: Frame[] = [
   { x: -2.2, y: 0.2, rotX: 0.25, rotY: 0.7, rotZ: 0.05, scale: 0.95, explode: 0 }, // 01
-  { x: 0, y: 0.9, rotX: 0.5, rotY: 2.2, rotZ: 0.2, scale: 0.7, explode: 1 },       // 02 تتفكك فوق
+  { x: 0, y: 1.5, rotX: 0.5, rotY: 2.2, rotZ: 0.2, scale: 0.6, explode: 1 },       // 02 تتفكك فوق
   { x: 2.4, y: -0.1, rotX: 0.1, rotY: -2.4, rotZ: 0, scale: 1.3, explode: 0 },     // 03 يسار
   { x: 0, y: 1.2, rotX: 0.3, rotY: 0.2, rotZ: -0.1, scale: 0.75, explode: 0 },     // 04 فوق
 ];
@@ -25,7 +25,9 @@ const KEYFRAMES: Frame[] = [
 type Part = { mesh: Mesh; start: Vector3; offset: Vector3 };
 
 function Jet() {
-  const { scene } = useGLTF("/jet.glb");
+    const { scene: original } = useGLTF("/jet.glb");
+  // نسخة جديدة من الطيارة، عشان الحسابات ما تتلخبط لما نعدل الكود
+  const scene = useMemo(() => original.clone(true), [original]);
   const ref = useRef<Group>(null);
   const smooth = useRef<Frame>({ ...KEYFRAMES[0] });
 
@@ -106,7 +108,7 @@ function Jet() {
 useGLTF.preload("/jet.glb");export default function Jet3D() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
-      <Canvas camera={{ position: [0, 0.5, 12], fov: 35 }} dpr={[1, 2]}>
+      <Canvas camera={{ position: [0, 0.5, 12], fov: 35 }} dpr={[1, 2]} gl={{ toneMappingExposure: 0.7 }}>
         <ambientLight intensity={0.2} />
         <directionalLight position={[5, 5, 5]} intensity={0.8} />
         <pointLight position={[-6, -2, -4]} color="#22E36A" intensity={60} />
